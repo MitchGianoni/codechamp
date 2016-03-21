@@ -33,6 +33,19 @@ def sort?
   return use
 end
 
+def sort_again?
+  puts
+  puts "Would you like to sort the data differently? (Y/N)"
+  maybe = gets.chomp.downcase
+
+  until ["y", "n"].include?(maybe)
+    puts "Please choose 'Y' or 'N'."
+    maybe = gets.chomp.downcase
+  end
+
+  maybe == "y"
+end
+
 module Codechamp
 	class App
   		def connect_github
@@ -56,10 +69,9 @@ module Codechamp
         @chaosarray.push(chaos)
       end
 
-  		def print_contributions_table(owner, repo)
+      def get_contributions_table(owner,repo)
         data = @github.get_contributions(owner,repo)
-
-        table = sort?
+        @chaosarray = Array.new
 
         data.each do |item|
           adds = 0
@@ -77,20 +89,26 @@ module Codechamp
 
           collect_data(username, adds, deletes, changes, commits)
         end
+        return @chaosarray
+      end
+
+
+  		def sort_contributions_table(sorted_chaosarray)
+        table = sort?
 
         if table == "username"
-          @chaosarray = sort_by_username(@chaosarray)
+          sorted_chaosarray = sort_by_username(sorted_chaosarray)
         elsif table == "adds"
-          @chaosarray = sort_by_adds(@chaosarray)
+          sorted_chaosarray = sort_by_adds(sorted_chaosarray)
         elsif table == "deletes"
-          @chaosarray = sort_by_deletes(@chaosarray)
+          sorted_chaosarray = sort_by_deletes(sorted_chaosarray)
         elsif table == "changes"
-          @chaosarray = sort_by_changes(@chaosarray)
+          sorted_chaosarray = sort_by_changes(sorted_chaosarray)
         elsif table == "commits"
-          @chaosarray = sort_by_commits(@chaosarray)
+          sorted_chaosarray = sort_by_commits(sorted_chaosarray)
         end
 
-        return @chaosarray
+        return sorted_chaosarray
       end 	
 
       def sort_by_username(chaosarray)
@@ -116,12 +134,19 @@ module Codechamp
 	end
 end
 
+app = Codechamp::App.new
+app.connect_github
+
 while again?
-  app = Codechamp::App.new
-  app.connect_github
   target = app.ask_user_for_owner_and_repo
-  nonsense = app.print_contributions_table(target[:owner], target[:repo])
-  ap nonsense
+  nonsense = app.get_contributions_table(target[:owner], target[:repo])
+  sorted_nonsense = app.sort_contributions_table(nonsense)
+  ap sorted_nonsense
+
+  until sort_again? == false
+    sorted_nonsense = app.sort_contributions_table(nonsense)
+    ap sorted_nonsense
+  end
 end
 
 
