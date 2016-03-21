@@ -122,13 +122,6 @@ while again?
   target = app.ask_user_for_owner_and_repo
   nonsense = app.print_contributions_table(target[:owner], target[:repo])
   ap nonsense
-  #print "\n"
-  #print "Username - Adds - Deletes - Changes - Commits \n"
-  #nonsense.each_index do |x|
-  #  ap nonsense.at(x)[:username], " - ", nonsense.at(x)[:adds], " - ", nonsense.at(x)[:deletes], " - ", nonsense.at(x)[:changes], " - ", nonsense.at(x)[:commits], "\n"
-  #end
-
-  binding.pry
 end
 
 
