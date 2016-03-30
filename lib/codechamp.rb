@@ -89,6 +89,7 @@ module Codechamp
 
           collect_data(username, adds, deletes, changes, commits)
         end
+
         return @chaosarray
       end
 
